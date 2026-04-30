@@ -230,6 +230,52 @@
             filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
         }
 
+        /* Mode reveal announcement */
+        .mode-announcement {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.85);
+            z-index: 2500;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            animation: modeRevealIn 0.5s ease-out;
+        }
+        .mode-announcement.active { display: flex; }
+        @keyframes modeRevealIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .mode-announcement .mode-label {
+            font-size: 1em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #888;
+            margin-bottom: 8px;
+        }
+        .mode-announcement .mode-name {
+            font-size: clamp(2rem, 8vw, 3.5rem);
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-shadow: 0 0 30px currentColor;
+        }
+        .mode-announcement .mode-category {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #ccc;
+            margin-top: 12px;
+        }
+        .mode-announcement .countdown-dots {
+            font-size: 1.5em;
+            margin-top: 16px;
+            color: #888;
+            letter-spacing: 4px;
+        }
+
         .finale-overlay {
             position: fixed;
             inset: 0;
@@ -385,6 +431,14 @@
         <div class="intro-row" id="introRow2"></div>
     </div>
 
+    <!-- Mode Announcement Overlay -->
+    <div class="mode-announcement" id="modeAnnouncement">
+        <div class="mode-label">Mode Selected</div>
+        <div class="mode-name" id="modeAnnounceName"></div>
+        <div class="mode-category" id="modeAnnounceCategory"></div>
+        <div class="countdown-dots" id="countdownDots"></div>
+    </div>
+
     <div class="finale-overlay" id="finaleOverlay">
         <div class="congrats-container">
             <div class="congrats-word" id="congratsWord"></div>
@@ -483,6 +537,7 @@
         const TOTAL_TURNS = TOTAL_ROUNDS * 2;
         const TURN_TIME = 90;
         const INTRO_DURATION = 4500;
+        const MODE_REVEAL_DELAY = 3000; // 3 seconds to read mode before Spotify opens
 
         const SPOTIFY_PLAYLISTS = {
             '1950s-1970s': { karaoke: '3WVlgzjhkxXiOZ67NImFyg', nameThatTune: '3WVlgzjhkxXiOZ67NImFyg' },
@@ -501,6 +556,10 @@
             introOverlay: $('#introOverlay'),
             introRow1: $('#introRow1'),
             introRow2: $('#introRow2'),
+            modeAnnouncement: $('#modeAnnouncement'),
+            modeAnnounceName: $('#modeAnnounceName'),
+            modeAnnounceCategory: $('#modeAnnounceCategory'),
+            countdownDots: $('#countdownDots'),
             finaleOverlay: $('#finaleOverlay'),
             congratsWord: $('#congratsWord'),
             winnerNameDisplay: $('#winnerNameDisplay'),
@@ -541,7 +600,7 @@
             catRotation: 0, modeRotation: 0,
             countdownInterval: null, timerSeconds: TURN_TIME,
             isSpinning: false, categoryTagInterval: null,
-            spotifyPlayerWindow: null,
+            modeRevealTimeout: null,
         };
 
         function formatTime(sec) {
@@ -553,6 +612,7 @@
         function showModal(modal) { modal.classList.add('active'); }
         function hideModals() { $$('.modal').forEach(m => m.classList.remove('active')); }
 
+        // ── Wheel Drawing with centered text for 2-slice mode wheel ──
         function drawWheel(canvas, slices, colors, opts = {}) {
             const ctx = canvas.getContext('2d');
             const cx = canvas.width / 2;
@@ -566,8 +626,8 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             for (let i = 0; i < numSlices; i++) {
-                const startAngle = i * angle;
-                const endAngle = (i + 1) * angle;
+                const startAngle = i * angle - Math.PI / 2; // Start from top
+                const endAngle = (i + 1) * angle - Math.PI / 2;
                 
                 ctx.beginPath();
                 ctx.moveTo(cx, cy);
@@ -582,23 +642,30 @@
                 ctx.translate(cx, cy);
                 const midAngle = startAngle + angle / 2;
                 ctx.rotate(midAngle);
+                
+                // Center text horizontally and vertically in the slice
                 ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
                 ctx.fillStyle = textColor;
                 ctx.font = `bold ${fontSize}px sans-serif`;
 
                 const text = slices[i];
-                const textRadius = radius * 0.62;
+                // Position text at 60% of radius (centered in the slice)
+                const textRadius = radius * 0.58;
                 
                 if (opts.multilineSplit && text.includes(' ')) {
                     const words = text.split(' ');
+                    const lineHeight = fontSize * 1.3;
+                    // For 2-word text like "NAME THAT SONG", split evenly
                     const mid = Math.ceil(words.length / 2);
                     const line1 = words.slice(0, mid).join(' ');
                     const line2 = words.slice(mid).join(' ');
-                    const lineHeight = fontSize * 1.2;
-                    ctx.fillText(line1, textRadius, -lineHeight / 2 + fontSize * 0.3);
-                    ctx.fillText(line2, textRadius, lineHeight / 2 + fontSize * 0.3);
+                    // Draw two lines centered vertically
+                    ctx.fillText(line1, textRadius, -lineHeight / 2);
+                    ctx.fillText(line2, textRadius, lineHeight / 2);
                 } else {
-                    ctx.fillText(text, textRadius, fontSize * 0.35);
+                    // Single line - perfectly centered
+                    ctx.fillText(text, textRadius, 0);
                 }
                 ctx.restore();
             }
@@ -609,13 +676,15 @@
         }
 
         function drawModeWheel() {
-            drawWheel(dom.modeCanvas, MODES, MODE_COLORS, { fontSize: 38, textColor: 'white', multilineSplit: true });
+            // Mode wheel with 2 slices - text perfectly centered
+            drawWheel(dom.modeCanvas, MODES, MODE_COLORS, { fontSize: 40, textColor: 'white', multilineSplit: true });
         }
 
         function spinWheel(canvas, slices, rotationRef) {
             const prize = Math.floor(Math.random() * slices.length);
             const sliceDeg = 360 / slices.length;
-            const stopAngle = 270 - (prize * sliceDeg) - (sliceDeg / 2);
+            // Pointer is at top (12 o'clock position)
+            const stopAngle = 360 - (prize * sliceDeg) - (sliceDeg / 2);
             const fullSpins = 360 * (5 + Math.floor(Math.random() * 4));
             const newRotation = rotationRef.val + fullSpins + (stopAngle - (rotationRef.val % 360));
             rotationRef.val = newRotation;
@@ -645,17 +714,51 @@
         function spinModeWheel() {
             dom.modeSpinBtn.style.display = 'none';
             const { prize } = spinWheel(dom.modeCanvas, MODES, modeRotationRef);
-            setTimeout(() => finalizeMode(prize), 4500 + 1000);
+            setTimeout(() => showModeReveal(prize), 4500 + 500);
+        }
+
+        // ── Mode Reveal with 3-second delay ──────────────
+        function showModeReveal(modeIndex) {
+            dom.modeModal.classList.remove('active');
+            
+            const modeName = MODES[modeIndex];
+            const modeColor = MODE_COLORS[modeIndex];
+            
+            // Show announcement overlay
+            dom.modeAnnounceName.textContent = modeName;
+            dom.modeAnnounceName.style.color = modeColor;
+            dom.modeAnnounceCategory.textContent = state.currentCategory;
+            dom.modeAnnouncement.classList.add('active');
+            
+            // Animated countdown dots
+            let dots = 3;
+            dom.countdownDots.textContent = '● ● ●';
+            
+            const dotInterval = setInterval(() => {
+                dots--;
+                if (dots >= 0) {
+                    dom.countdownDots.textContent = '● '.repeat(dots).trim();
+                }
+            }, 1000);
+            
+            // After 3 seconds, finalize the mode and open Spotify
+            state.modeRevealTimeout = setTimeout(() => {
+                clearInterval(dotInterval);
+                dom.modeAnnouncement.classList.remove('active');
+                finalizeMode(modeIndex);
+            }, MODE_REVEAL_DELAY);
         }
 
         function finalizeMode(index) {
             state.activeMode = MODES[index];
-            dom.modeModal.classList.remove('active');
             dom.modeDisplay.textContent = state.activeMode;
             dom.modeDisplay.style.color = MODE_COLORS[index];
             dom.stopBtn.style.display = 'inline-block';
             state.isSpinning = false;
+            
+            // Open Spotify after the reveal delay
             playSpotifyForCurrentMode();
+            
             startTimer();
         }
 
@@ -716,7 +819,7 @@
             dom.teamBanner.textContent = `${name.toUpperCase()}'S TURN`;
         }
 
-        // Spotify Functions
+        // ── Spotify ──────────────────────────────────────
         function playSpotifyForCurrentMode() {
             if (!state.currentCategory) return;
             const playlists = SPOTIFY_PLAYLISTS[state.currentCategory];
@@ -725,14 +828,13 @@
             const playlistId = state.activeMode === 'NAME THAT SONG' ? playlists.nameThatTune : playlists.karaoke;
             if (!playlistId) return;
             
-            // Open Spotify directly - simplest approach for iOS
             const spotifyURL = `spotify:playlist:${playlistId}`;
             const webURL = `https://open.spotify.com/playlist/${playlistId}`;
             
             // Try Spotify app first
             window.location.href = spotifyURL;
             
-            // Fallback to web after delay if app doesn't open
+            // Fallback to web after delay
             setTimeout(() => {
                 if (!document.hidden) {
                     window.open(webURL, '_blank');
@@ -740,8 +842,11 @@
             }, 2000);
         }
 
+        // ── Finale ───────────────────────────────────────
         function endGame() {
             clearInterval(state.countdownInterval);
+            clearTimeout(state.modeRevealTimeout);
+            dom.modeAnnouncement.classList.remove('active');
             dom.gameContainer.classList.remove('active');
             hideModals();
 
@@ -764,6 +869,8 @@
 
         function playAgain() {
             dom.finaleOverlay.classList.remove('active');
+            clearTimeout(state.modeRevealTimeout);
+            dom.modeAnnouncement.classList.remove('active');
             state.scores = [0, 0]; state.turnCount = 0; state.currentTeam = 1;
             state.activeMode = ''; state.currentCategory = ''; state.isSpinning = false;
             catRotationRef.val = 0; modeRotationRef.val = 0;
@@ -827,6 +934,7 @@
             }, 6000);
         }
 
+        // ── Intro ────────────────────────────────────────
         function spawnCategoryTag() {
             const tag = document.createElement('span');
             tag.className = 'intro-category-tag';
