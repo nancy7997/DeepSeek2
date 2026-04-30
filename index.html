@@ -39,7 +39,6 @@
             -webkit-user-select: none;
         }
 
-        /* ── INTRO OVERLAY ─────────────────────────────── */
         .intro-overlay {
             position: fixed;
             inset: 0;
@@ -69,16 +68,10 @@
             white-space: nowrap;
         }
         @keyframes floatFade {
-            0% {
-                opacity: 0;
-                transform: translate(0, 0) scale(0.7) rotate(0deg);
-            }
+            0% { opacity: 0; transform: translate(0, 0) scale(0.7) rotate(0deg); }
             20% { opacity: 1; }
             80% { opacity: 1; }
-            100% {
-                opacity: 0;
-                transform: translate(var(--drift-x), var(--drift-y)) scale(1.2) rotate(var(--drift-rotate));
-            }
+            100% { opacity: 0; transform: translate(var(--drift-x), var(--drift-y)) scale(1.2) rotate(var(--drift-rotate)); }
         }
 
         .intro-row {
@@ -89,9 +82,7 @@
             z-index: 2;
             animation: slideIn 1.8s forwards cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        .intro-row:nth-child(2) {
-            animation-delay: 0.3s;
-        }
+        .intro-row:nth-child(2) { animation-delay: 0.3s; }
         .block-letter {
             font-size: clamp(2rem, 10vw, 5rem);
             font-weight: 900;
@@ -109,18 +100,14 @@
             to { transform: translateY(-24px); }
         }
 
-        /* Game Container */
         .game-container {
             display: none;
             flex-direction: column;
             height: 100%;
             padding: env(safe-area-inset-top, 8px) 12px env(safe-area-inset-bottom, 8px) 12px;
         }
-        .game-container.active {
-            display: flex;
-        }
+        .game-container.active { display: flex; }
 
-        /* Header */
         .header {
             text-align: center;
             padding: 4px 0;
@@ -136,7 +123,6 @@
             color: #888;
         }
 
-        /* Scoreboard */
         .scoreboard {
             display: flex;
             gap: 8px;
@@ -166,7 +152,6 @@
             color: var(--green);
         }
 
-        /* Controls */
         .controls {
             display: flex;
             align-items: center;
@@ -195,23 +180,11 @@
             letter-spacing: 0.5px;
             transition: transform 0.15s, opacity 0.2s;
         }
-        .btn:active {
-            transform: scale(0.96);
-        }
-        .btn:disabled {
-            opacity: 0.5;
-            pointer-events: none;
-        }
-        .btn-spin {
-            background: var(--green);
-            color: #fff;
-        }
-        .btn-stop {
-            background: var(--red);
-            color: #fff;
-        }
+        .btn:active { transform: scale(0.96); }
+        .btn:disabled { opacity: 0.5; pointer-events: none; }
+        .btn-spin { background: var(--green); color: #fff; }
+        .btn-stop { background: var(--red); color: #fff; }
 
-        /* Mode Display */
         .mode-display {
             font-size: 1.4em;
             font-weight: 900;
@@ -222,7 +195,6 @@
             letter-spacing: 1px;
         }
 
-        /* Wheel */
         .wheel-area {
             flex: 1;
             display: flex;
@@ -258,7 +230,6 @@
             filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
         }
 
-        /* ── FINALE OVERLAY ────────────────────────────── */
         .finale-overlay {
             position: fixed;
             inset: 0;
@@ -270,11 +241,8 @@
             align-items: center;
             overflow: hidden;
         }
-        .finale-overlay.active {
-            display: flex;
-        }
+        .finale-overlay.active { display: flex; }
 
-        /* Congratulations - centered, fades in */
         .congrats-container {
             text-align: center;
             margin-bottom: 30px;
@@ -294,21 +262,11 @@
             text-shadow: 0 0 20px currentColor, 0 0 40px currentColor;
         }
         @keyframes congratsFadeIn {
-            0% {
-                opacity: 0;
-                transform: translateY(30px) scale(0.5);
-            }
-            60% {
-                opacity: 1;
-                transform: translateY(-5px) scale(1.1);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
+            0% { opacity: 0; transform: translateY(30px) scale(0.5); }
+            60% { opacity: 1; transform: translateY(-5px) scale(1.1); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
         }
 
-        /* Winner section */
         .winner-name-display {
             font-size: clamp(2.5rem, 10vw, 5rem);
             font-weight: 900;
@@ -325,17 +283,9 @@
             text-shadow: 0 0 30px rgba(255,255,255,0.5), 0 0 60px currentColor;
         }
         @keyframes winnerPopIn {
-            0% {
-                opacity: 0;
-                transform: scale(0) rotate(-10deg);
-            }
-            70% {
-                transform: scale(1.2) rotate(3deg);
-            }
-            100% {
-                opacity: 1;
-                transform: scale(1) rotate(0deg);
-            }
+            0% { opacity: 0; transform: scale(0) rotate(-10deg); }
+            70% { transform: scale(1.2) rotate(3deg); }
+            100% { opacity: 1; transform: scale(1) rotate(0deg); }
         }
 
         .winner-subtitle {
@@ -345,7 +295,6 @@
             opacity: 0;
             animation: simpleFadeIn 0.8s 1s forwards;
         }
-
         .score-final {
             font-size: 1.5em;
             color: var(--green);
@@ -354,12 +303,8 @@
             opacity: 0;
             animation: simpleFadeIn 0.8s 1.3s forwards;
         }
+        @keyframes simpleFadeIn { to { opacity: 1; } }
 
-        @keyframes simpleFadeIn {
-            to { opacity: 1; }
-        }
-
-        /* Play Again buttons - visible immediately */
         .play-again-buttons {
             display: flex;
             gap: 20px;
@@ -377,19 +322,10 @@
             letter-spacing: 1px;
             transition: transform 0.15s, background 0.3s;
         }
-        .btn-finale:active {
-            transform: scale(0.95);
-        }
-        .btn-yes {
-            background: var(--green);
-            color: #fff;
-        }
-        .btn-no {
-            background: #555;
-            color: #fff;
-        }
+        .btn-finale:active { transform: scale(0.95); }
+        .btn-yes { background: var(--green); color: #fff; }
+        .btn-no { background: #555; color: #fff; }
 
-        /* Modals */
         .modal {
             display: none;
             position: fixed;
@@ -401,9 +337,7 @@
             align-items: center;
             padding: 20px;
         }
-        .modal.active {
-            display: flex;
-        }
+        .modal.active { display: flex; }
         .modal-card {
             background: var(--dark);
             padding: 24px;
@@ -416,10 +350,7 @@
             align-items: center;
             gap: 12px;
         }
-        .modal-card h2 {
-            font-size: 1.3em;
-            color: #fff;
-        }
+        .modal-card h2 { font-size: 1.3em; color: #fff; }
         .modal-btn {
             width: 100%;
             padding: 16px;
@@ -430,14 +361,9 @@
             cursor: pointer;
             transition: transform 0.15s;
         }
-        .modal-btn:active {
-            transform: scale(0.97);
-        }
+        .modal-btn:active { transform: scale(0.97); }
 
-        /* Setup Modal */
-        .setup-modal .modal-card {
-            gap: 16px;
-        }
+        .setup-modal .modal-card { gap: 16px; }
         .setup-modal input {
             width: 100%;
             padding: 14px;
@@ -449,20 +375,16 @@
             text-align: center;
             outline: none;
         }
-        .setup-modal input:focus {
-            border-color: var(--green);
-        }
+        .setup-modal input:focus { border-color: var(--green); }
     </style>
 </head>
 <body>
 
-    <!-- Intro -->
     <div class="intro-overlay" id="introOverlay">
         <div class="intro-row" id="introRow1"></div>
         <div class="intro-row" id="introRow2"></div>
     </div>
 
-    <!-- Finale Overlay -->
     <div class="finale-overlay" id="finaleOverlay">
         <div class="congrats-container">
             <div class="congrats-word" id="congratsWord"></div>
@@ -476,7 +398,6 @@
         </div>
     </div>
 
-    <!-- Setup Modal -->
     <div class="modal setup-modal" id="setupModal">
         <div class="modal-card">
             <h2>Team Setup</h2>
@@ -486,12 +407,10 @@
         </div>
     </div>
 
-    <!-- Game UI -->
     <div class="game-container" id="gameContainer">
         <div class="header">
             <div class="team-banner" id="teamBanner">TEAM 1 TURN</div>
             <div class="round-indicator" id="roundIndicator">Round 1 of 5</div>
-            <div id="spotifyControls" style="text-align: center; margin-top: 4px; display: none; gap: 4px; justify-content: center;"></div>
         </div>
 
         <div class="scoreboard">
@@ -521,7 +440,6 @@
         </div>
     </div>
 
-    <!-- Mode Spin Modal -->
     <div class="modal" id="modeModal">
         <div class="modal-card">
             <h2>Spin for Mode</h2>
@@ -533,7 +451,6 @@
         </div>
     </div>
 
-    <!-- Score Modals -->
     <div class="modal" id="karaokeScoreModal">
         <div class="modal-card">
             <h2>Did they sing?</h2>
@@ -557,50 +474,26 @@
     (function() {
         'use strict';
 
-        // ── Configuration ──────────────────────────────────
         const CATEGORIES = ["1950s-1970s", "1980s", "1990s", "2000s", "2010s", "2020s", "Host's Choice"];
         const SLICE_COLORS = ['#e6194B', '#3cb44b', '#ffe119', '#4363d8', '#f58231', '#911eb4', '#42d4f4'];
         const CONGRATS_COLORS = ['#e6194B', '#3cb44b', '#ffe119', '#4363d8', '#f58231', '#911eb4', '#42d4f4', '#1DB954', '#FF6B6B', '#FFD93D'];
-        const MODES = ["KARAOKE", "NAME THAT SONG", "KARAOKE", "NAME THAT SONG", "KARAOKE", "NAME THAT SONG"];
-        const MODE_COLORS = ["#1DB954", "#3498db", "#1DB954", "#3498db", "#1DB954", "#3498db"];
+        const MODES = ["KARAOKE", "NAME THAT SONG"];
+        const MODE_COLORS = ["#1DB954", "#3498db"];
         const TOTAL_ROUNDS = 5;
         const TOTAL_TURNS = TOTAL_ROUNDS * 2;
         const TURN_TIME = 90;
         const INTRO_DURATION = 4500;
 
-        // ── Spotify Playlists ─────────────────────────────
         const SPOTIFY_PLAYLISTS = {
-            '1950s-1970s': {
-                karaoke: '3WVlgzjhkxXiOZ67NImFyg',
-                nameThatTune: '3WVlgzjhkxXiOZ67NImFyg'
-            },
-            '1980s': {
-                karaoke: '39FPPJjeOH2Ilr3WAlGb10',
-                nameThatTune: '39FPPJjeOH2Ilr3WAlGb10'
-            },
-            '1990s': {
-                karaoke: '7c4ppKG2IyUKaCHmKHq91O',
-                nameThatTune: '7c4ppKG2IyUKaCHmKHq91O'
-            },
-            '2000s': {
-                karaoke: '0PXnNmNOYBnSR79ElpLIHe',
-                nameThatTune: '0PXnNmNOYBnSR79ElpLIHe'
-            },
-            '2010s': {
-                karaoke: '3Xr0QIutddzftYZP40iu6P',
-                nameThatTune: '3Xr0QIutddzftYZP40iu6P'
-            },
-            '2020s': {
-                karaoke: '7GY5VrekWyTMEBn5tfjivv',
-                nameThatTune: '7GY5VrekWyTMEBn5tfjivv'
-            },
-            "Host's Choice": {
-                karaoke: '3WVlgzjhkxXiOZ67NImFyg',
-                nameThatTune: '3WVlgzjhkxXiOZ67NImFyg'
-            }
+            '1950s-1970s': { karaoke: '3WVlgzjhkxXiOZ67NImFyg', nameThatTune: '3WVlgzjhkxXiOZ67NImFyg' },
+            '1980s': { karaoke: '39FPPJjeOH2Ilr3WAlGb10', nameThatTune: '39FPPJjeOH2Ilr3WAlGb10' },
+            '1990s': { karaoke: '7c4ppKG2IyUKaCHmKHq91O', nameThatTune: '7c4ppKG2IyUKaCHmKHq91O' },
+            '2000s': { karaoke: '0PXnNmNOYBnSR79ElpLIHe', nameThatTune: '0PXnNmNOYBnSR79ElpLIHe' },
+            '2010s': { karaoke: '3Xr0QIutddzftYZP40iu6P', nameThatTune: '3Xr0QIutddzftYZP40iu6P' },
+            '2020s': { karaoke: '7GY5VrekWyTMEBn5tfjivv', nameThatTune: '7GY5VrekWyTMEBn5tfjivv' },
+            "Host's Choice": { karaoke: '3WVlgzjhkxXiOZ67NImFyg', nameThatTune: '3WVlgzjhkxXiOZ67NImFyg' }
         };
 
-        // ── DOM Cache ──────────────────────────────────────
         const $ = (sel) => document.querySelector(sel);
         const $$ = (sel) => document.querySelectorAll(sel);
 
@@ -639,47 +532,32 @@
             modeSpinBtn: $('#modeSpinBtn'),
             karaokeScoreModal: $('#karaokeScoreModal'),
             guessScoreModal: $('#guessScoreModal'),
-            spotifyControls: $('#spotifyControls'),
         };
 
-        // ── State ──────────────────────────────────────────
         const state = {
-            team1Name: '',
-            team2Name: '',
-            currentTeam: 1,
-            scores: [0, 0],
-            turnCount: 0,
-            activeMode: '',
-            currentCategory: '',
-            catRotation: 0,
-            modeRotation: 0,
-            countdownInterval: null,
-            timerSeconds: TURN_TIME,
-            isSpinning: false,
-            categoryTagInterval: null,
+            team1Name: '', team2Name: '',
+            currentTeam: 1, scores: [0, 0], turnCount: 0,
+            activeMode: '', currentCategory: '',
+            catRotation: 0, modeRotation: 0,
+            countdownInterval: null, timerSeconds: TURN_TIME,
+            isSpinning: false, categoryTagInterval: null,
             spotifyPlayerWindow: null,
         };
 
-        // ── Utilities ─────────────────────────────────────
         function formatTime(sec) {
             const m = Math.floor(sec / 60);
             const s = sec % 60;
             return `0${m}:${s.toString().padStart(2, '0')}`;
         }
 
-        function showModal(modal) {
-            modal.classList.add('active');
-        }
-        function hideModals() {
-            $$('.modal').forEach(m => m.classList.remove('active'));
-        }
+        function showModal(modal) { modal.classList.add('active'); }
+        function hideModals() { $$('.modal').forEach(m => m.classList.remove('active')); }
 
-        // ── Wheel Drawing ─────────────────────────────────
         function drawWheel(canvas, slices, colors, opts = {}) {
             const ctx = canvas.getContext('2d');
             const cx = canvas.width / 2;
             const cy = canvas.height / 2;
-            const radius = (Math.min(cx, cy) - 10);
+            const radius = Math.min(cx, cy) - 10;
             const numSlices = slices.length;
             const angle = (Math.PI * 2) / numSlices;
             const fontSize = opts.fontSize || 45;
@@ -688,9 +566,12 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             for (let i = 0; i < numSlices; i++) {
+                const startAngle = i * angle;
+                const endAngle = (i + 1) * angle;
+                
                 ctx.beginPath();
                 ctx.moveTo(cx, cy);
-                ctx.arc(cx, cy, radius, i * angle, (i + 1) * angle);
+                ctx.arc(cx, cy, radius, startAngle, endAngle);
                 ctx.fillStyle = colors[i];
                 ctx.fill();
                 ctx.strokeStyle = 'rgba(255,255,255,0.3)';
@@ -699,44 +580,43 @@
 
                 ctx.save();
                 ctx.translate(cx, cy);
-                ctx.rotate(i * angle + angle / 2);
-                ctx.textAlign = 'right';
+                const midAngle = startAngle + angle / 2;
+                ctx.rotate(midAngle);
+                ctx.textAlign = 'center';
                 ctx.fillStyle = textColor;
                 ctx.font = `bold ${fontSize}px sans-serif`;
 
                 const text = slices[i];
-                if (text.includes('-') && !opts.multilineSplit) {
-                    const [first, second] = text.split('-');
-                    ctx.fillText(first + '-', radius - 30, -10);
-                    ctx.fillText(second, radius - 30, fontSize - 10);
-                } else if (text.includes(' ') && opts.multilineSplit) {
+                const textRadius = radius * 0.62;
+                
+                if (opts.multilineSplit && text.includes(' ')) {
                     const words = text.split(' ');
                     const mid = Math.ceil(words.length / 2);
                     const line1 = words.slice(0, mid).join(' ');
                     const line2 = words.slice(mid).join(' ');
-                    ctx.fillText(line1, radius - 30, -10);
-                    ctx.fillText(line2, radius - 30, fontSize - 10);
+                    const lineHeight = fontSize * 1.2;
+                    ctx.fillText(line1, textRadius, -lineHeight / 2 + fontSize * 0.3);
+                    ctx.fillText(line2, textRadius, lineHeight / 2 + fontSize * 0.3);
                 } else {
-                    ctx.fillText(text, radius - 30, fontSize / 3);
+                    ctx.fillText(text, textRadius, fontSize * 0.35);
                 }
                 ctx.restore();
             }
         }
 
         function drawCategoryWheel() {
-            drawWheel(dom.catCanvas, CATEGORIES, SLICE_COLORS, { fontSize: 45, textColor: 'black', multilineSplit: false });
+            drawWheel(dom.catCanvas, CATEGORIES, SLICE_COLORS, { fontSize: 42, textColor: 'black', multilineSplit: false });
         }
 
         function drawModeWheel() {
-            drawWheel(dom.modeCanvas, MODES, MODE_COLORS, { fontSize: 35, textColor: 'white', multilineSplit: true });
+            drawWheel(dom.modeCanvas, MODES, MODE_COLORS, { fontSize: 38, textColor: 'white', multilineSplit: true });
         }
 
-        // ── Wheel Spinning ────────────────────────────────
         function spinWheel(canvas, slices, rotationRef) {
             const prize = Math.floor(Math.random() * slices.length);
             const sliceDeg = 360 / slices.length;
             const stopAngle = 270 - (prize * sliceDeg) - (sliceDeg / 2);
-            const fullSpins = 360 * 5;
+            const fullSpins = 360 * (5 + Math.floor(Math.random() * 4));
             const newRotation = rotationRef.val + fullSpins + (stopAngle - (rotationRef.val % 360));
             rotationRef.val = newRotation;
             canvas.style.transform = `rotate(${newRotation}deg)`;
@@ -748,20 +628,13 @@
 
         function spinCategory() {
             if (state.isSpinning) return;
-            
-            // Stop any currently playing Spotify
-            stopSpotifyPlayback();
-            
             state.isSpinning = true;
             dom.spinBtn.disabled = true;
             dom.modeDisplay.textContent = 'SPINNING...';
             dom.modeDisplay.style.color = 'var(--blue)';
 
             const { prize, duration } = spinWheel(dom.catCanvas, CATEGORIES, catRotationRef);
-            
-            // Store the selected category
             state.currentCategory = CATEGORIES[prize];
-            console.log(`🎯 Category spun: ${state.currentCategory}`);
 
             setTimeout(() => {
                 showModal(dom.modeModal);
@@ -775,7 +648,6 @@
             setTimeout(() => finalizeMode(prize), 4500 + 1000);
         }
 
-        // ── Game Logic ─────────────────────────────────────
         function finalizeMode(index) {
             state.activeMode = MODES[index];
             dom.modeModal.classList.remove('active');
@@ -783,10 +655,7 @@
             dom.modeDisplay.style.color = MODE_COLORS[index];
             dom.stopBtn.style.display = 'inline-block';
             state.isSpinning = false;
-            
-            // Play Spotify for the current mode and category
             playSpotifyForCurrentMode();
-            
             startTimer();
         }
 
@@ -820,10 +689,7 @@
             dom.score1.textContent = state.scores[0];
             dom.score2.textContent = state.scores[1];
 
-            stopSpotifyPlayback();
-
             state.currentTeam = state.currentTeam === 1 ? 2 : 1;
-
             hideModals();
             dom.timer.textContent = formatTime(TURN_TIME);
             dom.spinBtn.style.display = 'inline-block';
@@ -831,7 +697,6 @@
             dom.stopBtn.style.display = 'none';
             dom.modeDisplay.textContent = 'SPIN TO START';
             dom.modeDisplay.style.color = 'var(--blue)';
-
             dom.scoreCard1.classList.toggle('active');
             dom.scoreCard2.classList.toggle('active');
 
@@ -851,182 +716,76 @@
             dom.teamBanner.textContent = `${name.toUpperCase()}'S TURN`;
         }
 
-        // ── Spotify Playback ──────────────────────────────
+        // Spotify Functions
         function playSpotifyForCurrentMode() {
-            if (!state.currentCategory) {
-                console.log('❌ No category selected');
-                return;
-            }
+            if (!state.currentCategory) return;
+            const playlists = SPOTIFY_PLAYLISTS[state.currentCategory];
+            if (!playlists) return;
             
-            const categoryPlaylists = SPOTIFY_PLAYLISTS[state.currentCategory];
+            const playlistId = state.activeMode === 'NAME THAT SONG' ? playlists.nameThatTune : playlists.karaoke;
+            if (!playlistId) return;
             
-            if (!categoryPlaylists) {
-                console.log(`❌ No playlists for category: ${state.currentCategory}`);
-                return;
-            }
+            // Open Spotify directly - simplest approach for iOS
+            const spotifyURL = `spotify:playlist:${playlistId}`;
+            const webURL = `https://open.spotify.com/playlist/${playlistId}`;
             
-            let playlistId;
-            let modeLabel;
+            // Try Spotify app first
+            window.location.href = spotifyURL;
             
-            if (state.activeMode === 'NAME THAT SONG') {
-                playlistId = categoryPlaylists.nameThatTune;
-                modeLabel = '🎵 Name That Tune';
-            } else {
-                playlistId = categoryPlaylists.karaoke;
-                modeLabel = '🎤 Karaoke';
-            }
-            
-            console.log(`${modeLabel} - Category: ${state.currentCategory} - Playlist: ${playlistId}`);
-            
-            if (!playlistId) {
-                console.log('⚠️ No playlist ID found');
-                return;
-            }
-            
-            openSpotifyPlaylist(playlistId, state.activeMode === 'NAME THAT SONG');
-        }
-
-        function openSpotifyPlaylist(playlistId, hidden) {
-            // Remove any existing player
-            stopSpotifyPlayback();
-            
-            // Try Spotify URI scheme (works best on iOS)
-            const spotifyURI = `spotify:playlist:${playlistId}`;
-            
-            // Create and click a hidden link
-            const link = document.createElement('a');
-            link.href = spotifyURI;
-            link.style.display = 'none';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            
-            // Wait to see if Spotify app opened
+            // Fallback to web after delay if app doesn't open
             setTimeout(() => {
-                // If we're still on the page after 1.5 seconds, Spotify app probably didn't open
                 if (!document.hidden) {
-                    console.log('📱 Spotify app not detected, using web player fallback');
-                    
-                    // Create embedded player
-                    createEmbeddedPlayer(playlistId, hidden);
-                    
-                    // For Karaoke, also try opening in new window
-                    if (!hidden) {
-                        const webURL = `https://open.spotify.com/playlist/${playlistId}`;
-                        state.spotifyPlayerWindow = window.open(webURL, '_blank', 'width=400,height=600');
-                    }
-                } else {
-                    console.log('✅ Spotify app opened successfully');
+                    window.open(webURL, '_blank');
                 }
-            }, 1500);
+            }, 2000);
         }
 
-        function createEmbeddedPlayer(playlistId, hidden) {
-            const iframe = document.createElement('iframe');
-            iframe.id = 'spotifyPlayer';
-            iframe.src = `https://open.spotify.com/embed/playlist/${playlistId}?utm_source=generator&theme=0`;
-            iframe.frameBorder = '0';
-            iframe.allow = 'autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture';
-            iframe.loading = 'lazy';
-            
-            if (hidden) {
-                // HIDE COMPLETELY for Name That Tune
-                iframe.style.cssText = `
-                    position: fixed;
-                    bottom: -100px;
-                    right: -100px;
-                    width: 1px;
-                    height: 1px;
-                    opacity: 0;
-                    pointer-events: none;
-                    z-index: -999;
-                `;
-                console.log('🫣 Player hidden for Name That Tune mode');
+        function endGame() {
+            clearInterval(state.countdownInterval);
+            dom.gameContainer.classList.remove('active');
+            hideModals();
+
+            const winner = state.scores[0] > state.scores[1] ? state.team1Name :
+                          state.scores[1] > state.scores[0] ? state.team2Name : null;
+            const isTie = state.scores[0] === state.scores[1];
+
+            buildCongratsWord();
+            if (isTie) {
+                buildWinnerName('TIE');
+                dom.winnerSubtitle.textContent = 'Both teams scored equally!';
             } else {
-                // Show mini player for Karaoke
-                iframe.style.cssText = `
-                    position: fixed;
-                    bottom: 10px;
-                    left: 10px;
-                    z-index: 100;
-                    opacity: 0.9;
-                    border-radius: 12px;
-                    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-                    width: 300px;
-                    height: 80px;
-                `;
-                console.log('🎤 Mini player displayed for Karaoke mode');
+                buildWinnerName(winner);
+                dom.winnerSubtitle.textContent = 'is the Karaoke Roulette Champion!';
             }
-            
-            document.body.appendChild(iframe);
+            dom.scoreFinal.textContent = `${state.team1Name}: ${state.scores[0]} | ${state.team2Name}: ${state.scores[1]}`;
+            dom.finaleOverlay.classList.add('active');
+            launchConfettiFromCenter();
         }
 
-        function stopSpotifyPlayback() {
-            // Remove embedded player
-            const player = document.getElementById('spotifyPlayer');
-            if (player) {
-                player.remove();
-            }
-            
-            // Close any opened Spotify windows
-            if (state.spotifyPlayerWindow && !state.spotifyPlayerWindow.closed) {
-                try {
-                    state.spotifyPlayerWindow.close();
-                } catch (e) {
-                    console.log('Cannot close external window');
-                }
-            }
-            state.spotifyPlayerWindow = null;
+        function playAgain() {
+            dom.finaleOverlay.classList.remove('active');
+            state.scores = [0, 0]; state.turnCount = 0; state.currentTeam = 1;
+            state.activeMode = ''; state.currentCategory = ''; state.isSpinning = false;
+            catRotationRef.val = 0; modeRotationRef.val = 0;
+            clearInterval(state.countdownInterval);
+            dom.score1.textContent = '0'; dom.score2.textContent = '0';
+            dom.timer.textContent = formatTime(TURN_TIME);
+            dom.spinBtn.style.display = 'inline-block'; dom.spinBtn.disabled = false;
+            dom.stopBtn.style.display = 'none';
+            dom.modeDisplay.textContent = 'SPIN TO START'; dom.modeDisplay.style.color = 'var(--blue)';
+            dom.scoreCard1.classList.add('active'); dom.scoreCard2.classList.remove('active');
+            dom.roundIndicator.textContent = `Round 1 of ${TOTAL_ROUNDS}`;
+            dom.catCanvas.style.transform = 'rotate(0deg)';
+            dom.modeCanvas.style.transform = 'rotate(0deg)';
+            dom.gameContainer.classList.add('active');
+            updateBanner();
         }
 
-        function testSpotifyConnection() {
-            if (!state.currentCategory) {
-                alert('Spin the category wheel first!');
-                return;
-            }
-            
-            const playlist = SPOTIFY_PLAYLISTS[state.currentCategory];
-            if (!playlist) {
-                alert(`No playlist configured for ${state.currentCategory}`);
-                return;
-            }
-            
-            const testId = playlist.karaoke;
-            const testURL = `https://open.spotify.com/playlist/${testId}`;
-            
-            console.log(`🧪 Testing Spotify for: ${state.currentCategory}`);
-            console.log(`🔗 Playlist URL: ${testURL}`);
-            
-            window.open(testURL, '_blank');
-        }
+        function stayOnFinale() {}
 
-        function addSpotifyControls() {
-            dom.spotifyControls.style.display = 'flex';
-            dom.spotifyControls.innerHTML = '';
-            
-            // Test button
-            const testBtn = document.createElement('button');
-            testBtn.className = 'btn';
-            testBtn.style.cssText = 'background: var(--dark); color: #1DB954; font-size: 0.6em; padding: 4px 8px; border: 1px solid #1DB954;';
-            testBtn.textContent = '🧪 Test';
-            testBtn.onclick = testSpotifyConnection;
-            
-            // Stop button
-            const stopBtn = document.createElement('button');
-            stopBtn.className = 'btn';
-            stopBtn.style.cssText = 'background: var(--dark); color: #e74c3c; font-size: 0.6em; padding: 4px 8px; border: 1px solid #e74c3c;';
-            stopBtn.textContent = '⏹ Stop';
-            stopBtn.onclick = stopSpotifyPlayback;
-            
-            dom.spotifyControls.appendChild(testBtn);
-            dom.spotifyControls.appendChild(stopBtn);
-        }
-
-        // ── Finale ─────────────────────────────────────────
         function buildCongratsWord() {
             dom.congratsWord.innerHTML = '';
-            const text = 'CONGRATULATIONS';
-            text.split('').forEach((char, i) => {
+            'CONGRATULATIONS'.split('').forEach((char, i) => {
                 const span = document.createElement('span');
                 span.className = 'congrats-letter';
                 span.textContent = char;
@@ -1050,7 +809,6 @@
 
         function launchConfettiFromCenter() {
             if (typeof confetti !== 'function') return;
-
             const bursts = [
                 { delay: 200, particleCount: 80, spread: 360, startVelocity: 40, origin: { x: 0.5, y: 0.5 } },
                 { delay: 500, particleCount: 60, spread: 360, startVelocity: 45, origin: { x: 0.5, y: 0.5 } },
@@ -1061,89 +819,19 @@
                 { delay: 2200, particleCount: 90, spread: 360, startVelocity: 45, origin: { x: 0.5, y: 0.5 } },
                 { delay: 2800, particleCount: 150, spread: 360, startVelocity: 35, origin: { x: 0.5, y: 0.5 } },
             ];
-
-            bursts.forEach(({ delay, ...opts }) => {
-                setTimeout(() => confetti(opts), delay);
-            });
-
-            const ongoingConfetti = setInterval(() => {
+            bursts.forEach(({ delay, ...opts }) => setTimeout(() => confetti(opts), delay));
+            const ongoing = setInterval(() => {
                 if (dom.finaleOverlay.classList.contains('active')) {
                     confetti({ particleCount: 40, spread: 360, startVelocity: 30, origin: { x: 0.5, y: 0.5 } });
-                } else {
-                    clearInterval(ongoingConfetti);
-                }
+                } else { clearInterval(ongoing); }
             }, 6000);
         }
 
-        function endGame() {
-            clearInterval(state.countdownInterval);
-            stopSpotifyPlayback();
-            dom.gameContainer.classList.remove('active');
-            hideModals();
-
-            const winner = state.scores[0] > state.scores[1] ? state.team1Name :
-                          state.scores[1] > state.scores[0] ? state.team2Name : null;
-            const isTie = state.scores[0] === state.scores[1];
-
-            buildCongratsWord();
-
-            if (isTie) {
-                buildWinnerName('TIE');
-                dom.winnerSubtitle.textContent = 'Both teams scored equally!';
-            } else {
-                buildWinnerName(winner);
-                dom.winnerSubtitle.textContent = 'is the Karaoke Roulette Champion!';
-            }
-
-            dom.scoreFinal.textContent = `${state.team1Name}: ${state.scores[0]} | ${state.team2Name}: ${state.scores[1]}`;
-
-            dom.finaleOverlay.classList.add('active');
-
-            launchConfettiFromCenter();
-        }
-
-        function playAgain() {
-            dom.finaleOverlay.classList.remove('active');
-            stopSpotifyPlayback();
-            state.scores = [0, 0];
-            state.turnCount = 0;
-            state.currentTeam = 1;
-            state.activeMode = '';
-            state.currentCategory = '';
-            state.isSpinning = false;
-            state.catRotation = 0;
-            state.modeRotation = 0;
-            catRotationRef.val = 0;
-            modeRotationRef.val = 0;
-            clearInterval(state.countdownInterval);
-            dom.score1.textContent = '0';
-            dom.score2.textContent = '0';
-            dom.timer.textContent = formatTime(TURN_TIME);
-            dom.spinBtn.style.display = 'inline-block';
-            dom.spinBtn.disabled = false;
-            dom.stopBtn.style.display = 'none';
-            dom.modeDisplay.textContent = 'SPIN TO START';
-            dom.modeDisplay.style.color = 'var(--blue)';
-            dom.scoreCard1.classList.add('active');
-            dom.scoreCard2.classList.remove('active');
-            dom.roundIndicator.textContent = `Round 1 of ${TOTAL_ROUNDS}`;
-            dom.catCanvas.style.transform = 'rotate(0deg)';
-            dom.modeCanvas.style.transform = 'rotate(0deg)';
-            dom.gameContainer.classList.add('active');
-            updateBanner();
-        }
-
-        function stayOnFinale() {
-            // Keep the fanfare going - do nothing, just enjoy the show
-        }
-
-        // ── Intro Sequence ────────────────────────────────
         function spawnCategoryTag() {
             const tag = document.createElement('span');
             tag.className = 'intro-category-tag';
             tag.textContent = CATEGORIES[Math.floor(Math.random() * CATEGORIES.length)];
             tag.style.color = SLICE_COLORS[Math.floor(Math.random() * SLICE_COLORS.length)];
-
             const positions = [
                 { top: '5%', left: '3%', driftX: '40px', driftY: '30px', driftRotate: '15deg' },
                 { top: '5%', right: '3%', driftX: '-40px', driftY: '30px', driftRotate: '-15deg' },
@@ -1153,43 +841,27 @@
                 { bottom: '5%', left: '35%', driftX: '0px', driftY: '-50px', driftRotate: '-20deg' },
                 { top: '45%', left: '1%', driftX: '60px', driftY: '0px', driftRotate: '25deg' },
                 { top: '45%', right: '1%', driftX: '-60px', driftY: '0px', driftRotate: '-25deg' },
-                { top: '15%', left: '15%', driftX: '20px', driftY: '40px', driftRotate: '12deg' },
-                { top: '15%', right: '12%', driftX: '-30px', driftY: '35px', driftRotate: '-18deg' },
-                { bottom: '18%', left: '10%', driftX: '35px', driftY: '-25px', driftRotate: '8deg' },
-                { bottom: '18%', right: '8%', driftX: '-35px', driftY: '-25px', driftRotate: '-8deg' },
             ];
-
             const pos = positions[Math.floor(Math.random() * positions.length)];
-
             Object.entries(pos).forEach(([key, val]) => {
                 if (key === 'driftX' || key === 'driftY' || key === 'driftRotate') return;
                 tag.style[key] = typeof val === 'string' ? val : '';
             });
-
             tag.style.setProperty('--drift-x', pos.driftX);
             tag.style.setProperty('--drift-y', pos.driftY);
             tag.style.setProperty('--drift-rotate', pos.driftRotate);
-
-            const fontSize = 1 + Math.random() * 1.0;
-            tag.style.fontSize = `${fontSize}em`;
-
+            tag.style.fontSize = `${1 + Math.random() * 1.0}em`;
             dom.introOverlay.appendChild(tag);
-
-            tag.addEventListener('animationend', () => {
-                tag.remove();
-            });
+            tag.addEventListener('animationend', () => tag.remove());
         }
 
         function startCategoryTags() {
             spawnCategoryTag();
-            state.categoryTagInterval = setInterval(() => {
-                spawnCategoryTag();
-            }, 200 + Math.random() * 400);
+            state.categoryTagInterval = setInterval(() => spawnCategoryTag(), 200 + Math.random() * 400);
         }
-
         function stopCategoryTags() {
             clearInterval(state.categoryTagInterval);
-            dom.introOverlay.querySelectorAll('.intro-category-tag').forEach(tag => tag.remove());
+            dom.introOverlay.querySelectorAll('.intro-category-tag').forEach(t => t.remove());
         }
 
         function buildIntro() {
@@ -1203,12 +875,9 @@
                     container.appendChild(span);
                 });
             };
-
             createLetters('KARAOKE', dom.introRow1, 0);
             createLetters('ROULETTE', dom.introRow2, 3);
-
             startCategoryTags();
-
             setTimeout(() => {
                 stopCategoryTags();
                 dom.introOverlay.classList.add('fade-out');
@@ -1220,7 +889,6 @@
             }, INTRO_DURATION);
         }
 
-        // ── Setup & Init ──────────────────────────────────
         function startGame() {
             state.team1Name = dom.team1Input.value.trim() || 'Team 1';
             state.team2Name = dom.team2Input.value.trim() || 'Team 2';
@@ -1232,27 +900,12 @@
             drawModeWheel();
             updateBanner();
             dom.roundIndicator.textContent = `Round 1 of ${TOTAL_ROUNDS}`;
-            addSpotifyControls();
-            
-            console.log('🎵 Spotify Integration Ready!');
-            console.log('📋 Playlists configured for all decades');
-            console.log('🎮 Spin category wheel → Mode wheel → Spotify plays automatically');
-            console.log('🎵 Name That Tune: Player hidden, game screen visible');
-            console.log('🎤 Karaoke: Mini player shown or Spotify app opens');
         }
 
-        // ── Event Listeners ───────────────────────────────
         dom.startGameBtn.addEventListener('click', startGame);
-        dom.team2Input.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') startGame();
-        });
-
+        dom.team2Input.addEventListener('keydown', e => { if (e.key === 'Enter') startGame(); });
         dom.spinBtn.addEventListener('click', spinCategory);
-        dom.stopBtn.addEventListener('click', function() {
-            if (state.isSpinning) return;
-            stopSpotifyPlayback();
-            triggerScoring();
-        });
+        dom.stopBtn.addEventListener('click', () => { if (!state.isSpinning) triggerScoring(); });
         dom.modeSpinBtn.addEventListener('click', spinModeWheel);
 
         dom.karaokeScoreModal.querySelectorAll('[data-points]').forEach(btn => {
@@ -1265,7 +918,6 @@
         dom.btnPlayAgain.addEventListener('click', playAgain);
         dom.btnStay.addEventListener('click', stayOnFinale);
 
-        // ── Boot ──────────────────────────────────────────
         buildIntro();
     })();
     </script>
