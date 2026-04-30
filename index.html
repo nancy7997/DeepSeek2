@@ -1,1 +1,348 @@
+<!-- Add this entire script section before the closing </body> tag -->
 
+<script>
+// ==================== SPOTIFY INTEGRATION ====================
+
+// SPOTIFY PLAYLISTS - Your actual playlist IDs
+// Each category uses the same playlist for both karaoke and Name That Tune
+// The playlist ID is the string after /playlist/ and before ? in the URL
+const SPOTIFY_PLAYLISTS = {
+    '1950s-1970s': {
+        karaoke: '3WVlgzjhkxXiOZ67NImFyg',
+        nameThatTune: '3WVlgzjhkxXiOZ67NImFyg'
+    },
+    '1980s': {
+        karaoke: '39FPPJjeOH2Ilr3WAlGb10',
+        nameThatTune: '39FPPJjeOH2Ilr3WAlGb10'
+    },
+    '1990s': {
+        karaoke: '7c4ppKG2IyUKaCHmKHq91O',
+        nameThatTune: '7c4ppKG2IyUKaCHmKHq91O'
+    },
+    '2000s': {
+        karaoke: '0PXnNmNOYBnSR79ElpLIHe',
+        nameThatTune: '0PXnNmNOYBnSR79ElpLIHe'
+    },
+    '2010s': {
+        karaoke: '3Xr0QIutddzftYZP40iu6P',
+        nameThatTune: '3Xr0QIutddzftYZP40iu6P'
+    },
+    '2020s': {
+        karaoke: '7GY5VrekWyTMEBn5tfjivv',
+        nameThatTune: '7GY5VrekWyTMEBn5tfjivv'
+    },
+    "Host's Choice": {
+        karaoke: '3WVlgzjhkxXiOZ67NImFyg',  // You can change this to any playlist
+        nameThatTune: '3WVlgzjhkxXiOZ67NImFyg'  // You can change this to any playlist
+    }
+};
+
+// Track current state for Spotify
+let currentCategory = '';
+let spotifyPlayerWindow = null;
+
+// ==================== MODIFIED SPIN CATEGORY ====================
+
+// Override spinCategory to store the selected category
+const originalSpinCategory = spinCategory;
+spinCategory = function() {
+    if (state.isSpinning) return;
+    
+    // Stop any currently playing Spotify
+    stopSpotifyPlayback();
+    
+    state.isSpinning = true;
+    dom.spinBtn.disabled = true;
+    dom.modeDisplay.textContent = 'SPINNING...';
+    dom.modeDisplay.style.color = 'var(--blue)';
+
+    const { prize, duration } = spinWheel(dom.catCanvas, CATEGORIES, catRotationRef);
+    
+    // STORE THE SELECTED CATEGORY - this is what both modes will use
+    currentCategory = CATEGORIES[prize];
+    
+    console.log(`🎯 Category spun: ${currentCategory}`);
+
+    setTimeout(() => {
+        showModal(dom.modeModal);
+        dom.modeSpinBtn.style.display = 'block';
+    }, duration + 500);
+};
+
+// ==================== MODIFIED FINALIZE MODE ====================
+
+// Override finalizeMode to use the SAME category for both modes
+const originalFinalizeMode = finalizeMode;
+finalizeMode = function(index) {
+    state.activeMode = MODES[index];
+    dom.modeModal.classList.remove('active');
+    dom.modeDisplay.textContent = state.activeMode;
+    dom.modeDisplay.style.color = MODE_COLORS[index];
+    dom.stopBtn.style.display = 'inline-block';
+    state.isSpinning = false;
+    
+    // Play Spotify using the SAME category that was spun
+    playSpotifyForCurrentMode();
+    
+    startTimer();
+};
+
+// ==================== SPOTIFY PLAYBACK FUNCTIONS ====================
+
+function playSpotifyForCurrentMode() {
+    if (!currentCategory) {
+        console.log('❌ No category selected');
+        return;
+    }
+    
+    const categoryPlaylists = SPOTIFY_PLAYLISTS[currentCategory];
+    
+    if (!categoryPlaylists) {
+        console.log(`❌ No playlists configured for category: ${currentCategory}`);
+        return;
+    }
+    
+    let playlistId;
+    
+    if (state.activeMode === 'NAME THAT SONG') {
+        playlistId = categoryPlaylists.nameThatTune;
+        console.log(`🎵 Playing Name That Tune playlist for: ${currentCategory}`);
+        console.log(`🎵 Playlist ID: ${playlistId}`);
+        playNameThatTunePlaylist(playlistId);
+    } else if (state.activeMode === 'KARAOKE') {
+        playlistId = categoryPlaylists.karaoke;
+        console.log(`🎤 Playing Karaoke playlist for: ${currentCategory}`);
+        console.log(`🎤 Playlist ID: ${playlistId}`);
+        playKaraokePlaylist(playlistId);
+    }
+}
+
+function playKaraokePlaylist(playlistId) {
+    if (!playlistId) {
+        console.log('⚠️ No playlist ID found');
+        return;
+    }
+    
+    // For Karaoke: Try to open in Spotify app first, then fallback to web player
+    openSpotifyPlaylist(playlistId, false);
+}
+
+function playNameThatTunePlaylist(playlistId) {
+    if (!playlistId) {
+        console.log('⚠️ No playlist ID found');
+        return;
+    }
+    
+    // For Name That Tune: HIDE the source, keep game screen visible
+    openSpotifyPlaylist(playlistId, true);
+}
+
+function openSpotifyPlaylist(playlistId, hidden) {
+    // Remove any existing player
+    stopSpotifyPlayback();
+    
+    // Try Spotify URI scheme (works best on iOS)
+    const spotifyURI = `spotify:playlist:${playlistId}`;
+    
+    // Create and click a hidden link
+    const link = document.createElement('a');
+    link.href = spotifyURI;
+    link.style.display = 'none';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    // Wait to see if Spotify app opened
+    setTimeout(() => {
+        // If we're still on the page after 1.5 seconds, Spotify app probably didn't open
+        if (!document.hidden) {
+            console.log('📱 Spotify app not detected, using web player fallback');
+            
+            // Create embedded player
+            createEmbeddedPlayer(playlistId, hidden);
+            
+            // For Karaoke, also try opening in new window
+            if (!hidden) {
+                const webURL = `https://open.spotify.com/playlist/${playlistId}`;
+                spotifyPlayerWindow = window.open(webURL, '_blank', 'width=400,height=600');
+            }
+        } else {
+            console.log('✅ Spotify app opened successfully');
+        }
+    }, 1500);
+}
+
+function createEmbeddedPlayer(playlistId, hidden) {
+    const iframe = document.createElement('iframe');
+    iframe.id = 'spotifyPlayer';
+    iframe.src = `https://open.spotify.com/embed/playlist/${playlistId}?utm_source=generator&theme=0`;
+    iframe.frameBorder = '0';
+    iframe.allow = 'autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture';
+    iframe.loading = 'lazy';
+    
+    if (hidden) {
+        // HIDE COMPLETELY for Name That Tune
+        iframe.style.cssText = `
+            position: fixed;
+            bottom: -100px;
+            right: -100px;
+            width: 1px;
+            height: 1px;
+            opacity: 0;
+            pointer-events: none;
+            z-index: -999;
+        `;
+        console.log('🫣 Player hidden for Name That Tune mode');
+    } else {
+        // Show mini player for Karaoke
+        iframe.style.cssText = `
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            z-index: 100;
+            opacity: 0.9;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            width: 300px;
+            height: 80px;
+        `;
+        console.log('🎤 Mini player displayed for Karaoke mode');
+    }
+    
+    document.body.appendChild(iframe);
+}
+
+function stopSpotifyPlayback() {
+    // Remove embedded player
+    const player = document.getElementById('spotifyPlayer');
+    if (player) {
+        player.remove();
+    }
+    
+    // Close any opened Spotify windows
+    if (spotifyPlayerWindow && !spotifyPlayerWindow.closed) {
+        try {
+            spotifyPlayerWindow.close();
+        } catch (e) {
+            // Can't close windows we didn't open
+            console.log('Cannot close external window');
+        }
+    }
+    spotifyPlayerWindow = null;
+}
+
+// ==================== MODIFY STOP/EARLY STOP ====================
+
+const originalEarlyStop = earlyStop;
+earlyStop = function() {
+    if (state.isSpinning) return;
+    stopSpotifyPlayback();
+    triggerScoring();
+};
+
+// ==================== MODIFY RECORD SCORE ====================
+
+const originalRecordScore = recordScore;
+recordScore = function(points) {
+    stopSpotifyPlayback();
+    originalRecordScore(points);
+};
+
+// ==================== MODIFY PLAY AGAIN ====================
+
+const originalPlayAgain = playAgain;
+playAgain = function() {
+    stopSpotifyPlayback();
+    currentCategory = '';
+    originalPlayAgain();
+};
+
+// ==================== SPOTIFY TEST FUNCTION ====================
+
+function testSpotifyConnection() {
+    if (!currentCategory) {
+        alert('Spin the category wheel first!');
+        return;
+    }
+    
+    const playlist = SPOTIFY_PLAYLISTS[currentCategory];
+    if (!playlist) {
+        alert(`No playlist configured for ${currentCategory}`);
+        return;
+    }
+    
+    const testId = playlist.karaoke;
+    const testURL = `https://open.spotify.com/playlist/${testId}`;
+    
+    console.log(`🧪 Testing Spotify connection for: ${currentCategory}`);
+    console.log(`🔗 Playlist URL: ${testURL}`);
+    
+    window.open(testURL, '_blank');
+}
+
+// ==================== ADD SPOTIFY CONTROLS ====================
+
+function addSpotifyButton() {
+    // Remove existing buttons if any
+    const existing = document.getElementById('spotifyControls');
+    if (existing) existing.remove();
+    
+    const controlsDiv = document.createElement('div');
+    controlsDiv.id = 'spotifyControls';
+    controlsDiv.style.cssText = 'text-align: center; margin-top: 4px; display: flex; gap: 4px; justify-content: center;';
+    
+    // Test button
+    const testBtn = document.createElement('button');
+    testBtn.className = 'btn';
+    testBtn.style.cssText = 'background: var(--dark); color: #1DB954; font-size: 0.6em; padding: 4px 8px; border: 1px solid #1DB954;';
+    testBtn.textContent = '🧪 Test';
+    testBtn.onclick = testSpotifyConnection;
+    
+    // Stop button
+    const stopBtn = document.createElement('button');
+    stopBtn.className = 'btn';
+    stopBtn.style.cssText = 'background: var(--dark); color: #e74c3c; font-size: 0.6em; padding: 4px 8px; border: 1px solid #e74c3c;';
+    stopBtn.textContent = '⏹ Stop';
+    stopBtn.onclick = stopSpotifyPlayback;
+    
+    controlsDiv.appendChild(testBtn);
+    controlsDiv.appendChild(stopBtn);
+    
+    const header = document.querySelector('.header');
+    if (header) {
+        header.appendChild(controlsDiv);
+    }
+}
+
+// ==================== OVERRIDE START GAME ====================
+
+const originalStartGame = startGame;
+startGame = function() {
+    originalStartGame();
+    setTimeout(addSpotifyButton, 500);
+};
+
+// ==================== INITIALIZATION ====================
+
+console.log('🎵 Spotify Integration Ready!');
+console.log('📋 Configured Playlists:');
+console.log('  1950s-1970s: ' + SPOTIFY_PLAYLISTS['1950s-1970s'].karaoke);
+console.log('  1980s: ' + SPOTIFY_PLAYLISTS['1980s'].karaoke);
+console.log('  1990s: ' + SPOTIFY_PLAYLISTS['1990s'].karaoke);
+console.log('  2000s: ' + SPOTIFY_PLAYLISTS['2000s'].karaoke);
+console.log('  2010s: ' + SPOTIFY_PLAYLISTS['2010s'].karaoke);
+console.log('  2020s: ' + SPOTIFY_PLAYLISTS['2020s'].karaoke);
+console.log("  Host's Choice: " + SPOTIFY_PLAYLISTS["Host's Choice"].karaoke);
+console.log('');
+console.log('🎮 How it works:');
+console.log('  1. First wheel spins → selects decade category');
+console.log('  2. Second wheel spins → selects Karaoke or Name That Tune');
+console.log('  3. Same decade playlist plays for both modes');
+console.log('  4. Name That Tune: Spotify hidden, game screen visible');
+console.log('  5. Karaoke: Mini player shown or Spotify app opens');
+console.log('');
+console.log('💡 Tips:');
+console.log('  - Keep Spotify app installed for best experience');
+console.log('  - Use "🧪 Test" button to verify playlist opens');
+console.log('  - Use "⏹ Stop" button to stop playback');
+</script>
